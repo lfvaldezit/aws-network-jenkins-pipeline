@@ -3,6 +3,37 @@ pipeline {
 
     stages {
 
+        stage('Backup State') {
+            steps {
+                dir('terraform') {
+                    sh '''
+                        if [ -f terraform.tfstate ]; then
+                            cp terraform.tfstate terraform.tfstate.backup-before-s3
+                        fi
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform Init') {
+    steps {
+        withCredentials([
+            string(
+                credentialsId: 'aws-access-key-id',
+                variable: 'AWS_ACCESS_KEY_ID'
+            ),
+            string(
+                credentialsId: 'aws-secret-access-key',
+                variable: 'AWS_SECRET_ACCESS_KEY'
+            )
+        ]) {
+            dir('terraform') {
+                sh 'terraform init -migrate-state -force-copy'
+            }
+        }
+    }
+}
+/*
         stage('Terraform Init') {
             steps {
                 dir('terraform') {
@@ -10,7 +41,7 @@ pipeline {
                 }
             }
         }
-
+*/
         stage('Terraform Format') {
             steps {
                 dir('terraform') {
