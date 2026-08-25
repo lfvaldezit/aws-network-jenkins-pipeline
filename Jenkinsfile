@@ -1,8 +1,8 @@
 pipeline {
     agent any
-/*
-    stages {
 
+    stages {
+/*
         stage('Backup State') {
             steps {
                 dir('terraform') {
@@ -100,25 +100,26 @@ pipeline {
                     }
                 }
             }
-        }
-    } */
-    stage('Terraform Destroy') {
-    steps {
-        withCredentials([
-            string(
-                credentialsId: 'aws_access_key_id',
-                variable: 'AWS_ACCESS_KEY_ID'
-            ),
-            string(
-                credentialsId: 'aws_secret_access_key',
-                variable: 'AWS_SECRET_ACCESS_KEY'
-            )
-        ]) {
-            dir('terraform') {
-                //sh 'terraform apply tfdestroy'
-                sh 'terraform destroy -auto-approve'
+        }*/
+                stage('Terraform Destroy') {
+        steps {
+            withCredentials([
+                string(
+                    credentialsId: 'aws_access_key_id',
+                    variable: 'AWS_ACCESS_KEY_ID'
+                ),
+                string(
+                    credentialsId: 'aws_secret_access_key',
+                    variable: 'AWS_SECRET_ACCESS_KEY'
+                )
+            ]) {
+                dir('terraform') {
+                    //sh 'terraform apply tfdestroy'
+                    sh 'terraform destroy -auto-approve'
+                }
             }
         }
     }
-}
+    } 
+
 }
